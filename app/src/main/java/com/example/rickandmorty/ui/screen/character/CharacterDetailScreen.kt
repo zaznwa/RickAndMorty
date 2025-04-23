@@ -1,7 +1,5 @@
 package com.example.rickandmorty.ui.screen.character
 
-import android.R.attr.fontFamily
-import android.net.Uri
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.*
@@ -60,9 +58,11 @@ fun CharacterDetailScreen(characterId: String, navController: NavController, vie
                 .padding(horizontal = 16.dp),
         ) {
             Text(text = character?.name.toString(), fontSize = 50.sp, style = TextStyle(lineHeight = 54.sp), color = White)
-            Text(text = "Status: ${character?.status}", fontSize = 18.sp)
-            Text(text = "Species: ${character?.species}", fontSize = 18.sp)
-            Text(text = "Gender: ${character?.gender}", fontSize = 18.sp)
+            Text(text = "Статус: ${character?.status}", fontSize = 18.sp)
+            Text(text = "Вид: ${character?.species}", fontSize = 18.sp)
+            Text(text = "Пол: ${character?.gender}", fontSize = 18.sp)
+            Text(text = "Планета происхождения: ${character?.origin?.name}", fontSize = 18.sp)
+            Text(text = "Количество эпизодов: ${character?.episode?.size}", fontSize = 18.sp)
         }
     }
 }

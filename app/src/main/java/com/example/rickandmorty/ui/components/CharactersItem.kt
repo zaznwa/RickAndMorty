@@ -1,6 +1,5 @@
 package com.example.rickandmorty.ui.components
 
-import android.graphics.pdf.models.ListItem
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -14,12 +13,13 @@ import androidx.compose.material3.contentColorFor
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color.Companion.Gray
+import androidx.compose.ui.graphics.Color.Companion.Red
 import androidx.compose.ui.graphics.Color.Companion.White
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
 @Composable
-fun ListItem(
+fun CharactersItem(
     id: Int,
     name: String,
     onClick: () -> Unit
@@ -44,8 +44,8 @@ fun ListItem(
                     .fillMaxSize(),
                 verticalArrangement = Arrangement.Center
             ) {
-                Text(text = "№: $id", color = White, fontSize = 14.sp)
-                Text(text = name, color = White, fontSize = 18.sp)
+                Text(text = "№: $id", color = Red, fontSize = 14.sp)
+                Text(text = name, color = Red, fontSize = 18.sp)
             }
         }
     }
