@@ -20,6 +20,7 @@ okhttp = "4.12.0"
 loggingInterceptor = "4.12.0"
 
 # Retrofit + GSON
+pagingCompose = "3.3.6"
 retrofit = "2.11.0"
 converterGson = "2.9.0"
 
@@ -31,12 +32,17 @@ koinAndroid = "4.0.2"
 koinCompose = "4.0.2"
 koinComposeViewmodel = "4.0.2"
 
+roomCompiler = "2.7.1"
 runtimeLivedata = "1.7.8"
 
 
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
+androidx-paging-compose = { module = "androidx.paging:paging-compose", version.ref = "pagingCompose" }
+androidx-room-compiler = { module = "androidx.room:room-compiler", version.ref = "roomCompiler" }
+androidx-room-ktx = { module = "androidx.room:room-ktx", version.ref = "roomCompiler" }
+androidx-room-runtime = { module = "androidx.room:room-runtime", version.ref = "roomCompiler" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
 androidx-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espressoCore" }

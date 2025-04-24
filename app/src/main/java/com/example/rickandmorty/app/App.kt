@@ -1,9 +1,8 @@
 package com.example.rickandmorty.app
 
 import android.app.Application
-import android.media.tv.interactive.AppLinkInfo
-import com.example.rickandmorty.di.dataModule
-import com.example.rickandmorty.di.uiModule
+import com.example.rickandmorty.data.serviceLocator.dataModule
+import com.example.rickandmorty.ui.serviceLocator.uiModule
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.context.startKoin
 

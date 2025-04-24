@@ -20,6 +20,7 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
@@ -49,13 +50,13 @@ fun CharactersScreen(
     viewModel: CharacterViewModel = koinViewModel()
 ) {
 
-    val characters by viewModel.characters.observeAsState(emptyList())
+    val charactersFlow by viewModel.charactersFlow.collectAsState()
 
     LazyColumn(
         modifier = Modifier
             .fillMaxSize()
     ) {
-        items(characters) { character ->
+        items(charactersFlow) { character ->
             CharactersItem(character = character, navController = navController)
         }
     }

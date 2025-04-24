@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -21,22 +22,34 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import coil3.compose.AsyncImage
+import com.example.rickandmorty.data.dao.FavoriteCharacterEntity
 import com.example.rickandmorty.data.dto.ResponseCharacterModel
+import com.example.rickandmorty.ui.components.CharacterDetailCard
+import com.example.rickandmorty.ui.screen.favorite.FavoriteViewModel
 import org.koin.compose.viewmodel.koinViewModel
 import kotlin.text.toIntOrNull
 import kotlin.toString
 
 @Composable
-fun CharacterDetailScreen(characterId: String, navController: NavController, viewModel: CharacterViewModel = koinViewModel()) {
-
-    var character by remember { mutableStateOf<ResponseCharacterModel?>(null) }
+fun CharacterDetailScreen(
+    characterId: String,
+    navController: NavController,
+    viewModel: CharacterViewModel = koinViewModel(),
+    favoritesViewModel: FavoriteViewModel = koinViewModel()
+) {
     val idInt = characterId.toIntOrNull() ?: 0
 
-    LaunchedEffect(characterId) {
-        viewModel.fetchCharacterDetail(idInt) {
-            character = it
-        }
+    LaunchedEffect(idInt) {
+        viewModel.fetchCharacterDetail(idInt)
     }
+
+    val character by viewModel.characterDetailFlow.collectAsState()
+    val favoriteCharacters by favoritesViewModel.favoriteCharactersFlow.collectAsState(initial = emptyList())
+
+    val isFavorite = favoriteCharacters.any { it.id == character?.id }
+
+
+
 
     Column(
         modifier = Modifier
@@ -52,18 +65,20 @@ fun CharacterDetailScreen(characterId: String, navController: NavController, vie
             contentScale = ContentScale.Crop
         )
         Spacer(modifier = Modifier.height(6.dp))
-        Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 16.dp),
-        ) {
-            Text(text = character?.name.toString(), fontSize = 50.sp, style = TextStyle(lineHeight = 54.sp), color = White)
-            Text(text = "Статус: ${character?.status}", fontSize = 18.sp)
-            Text(text = "Вид: ${character?.species}", fontSize = 18.sp)
-            Text(text = "Пол: ${character?.gender}", fontSize = 18.sp)
-            Text(text = "Планета происхождения: ${character?.origin?.name}", fontSize = 18.sp)
-            Text(text = "Количество эпизодов: ${character?.episode?.size}", fontSize = 18.sp)
-        }
+        CharacterDetailCard(
+            character = character,
+            isFavorite = isFavorite,
+            onFavoriteClick = {
+                character?.let {
+                    if (isFavorite) {
+                        favoritesViewModel.deleteFavoriteCharacter(it as FavoriteCharacterEntity)
+                    } else {
+                        favoritesViewModel.addFavoriteCharacter(it)
+                    }
+                }
+            },
+            modifier = Modifier.padding(16.dp)
+        )
     }
 }
 

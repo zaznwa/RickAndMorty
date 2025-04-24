@@ -3,6 +3,7 @@ package com.example.rickandmorty.ui.navigation
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.DateRange
+import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Place
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -29,6 +30,7 @@ import com.example.rickandmorty.ui.screen.character.CharacterDetailScreen
 import com.example.rickandmorty.ui.screen.character.CharactersScreen
 import com.example.rickandmorty.ui.screen.episode.EpisodeDetailScreen
 import com.example.rickandmorty.ui.screen.episode.EpisodesScreen
+import com.example.rickandmorty.ui.screen.favorite.FavoriteScreen
 import com.example.rickandmorty.ui.screen.location.LocationDetailScreen
 import com.example.rickandmorty.ui.screen.location.LocationsScreen
 
@@ -45,6 +47,7 @@ fun App() {
         currentRoute?.startsWith(Screen.CharacterDetail.route) == true ||
                 currentRoute?.startsWith(Screen.LocationDetail.route) == true ||
                 currentRoute?.startsWith(Screen.EpisodeDetail.route) == true -> false
+
         else -> true
     }
 
@@ -52,7 +55,12 @@ fun App() {
         topBar = {
             if (showAppBars) {
                 TopAppBar(
-                    title = { Text(text = currentScreenTitle(currentRoute).toString(), color = Color.White) },
+                    title = {
+                        Text(
+                            text = currentScreenTitle(currentRoute).toString(),
+                            color = Color.White
+                        )
+                    },
                     colors = TopAppBarDefaults.topAppBarColors(
                         containerColor = DarkGray
                     )
@@ -78,6 +86,9 @@ fun App() {
             }
             composable(Screen.Episodes.route) {
                 EpisodesScreen(navController)
+            }
+            composable(Screen.Favorites.route) {
+                FavoriteScreen(navController)
             }
             composable("${Screen.CharacterDetail.route}/{characterId}") { backStackEntry ->
                 backStackEntry.arguments?.getString("characterId")?.let {
@@ -125,7 +136,8 @@ fun BottomNavigationBar(navController: NavController, currentRoute: String?) {
     val items = listOf(
         BottomNavItem(Screen.Characters, Icons.Filled.Home),
         BottomNavItem(Screen.Locations, Icons.Filled.Place),
-        BottomNavItem(Screen.Episodes, Icons.Filled.DateRange)
+        BottomNavItem(Screen.Episodes, Icons.Filled.DateRange),
+        BottomNavItem(Screen.Favorites, Icons.Filled.Favorite)
     )
 
     NavigationBar(
