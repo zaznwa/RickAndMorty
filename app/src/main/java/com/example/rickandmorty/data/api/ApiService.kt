@@ -9,14 +9,16 @@ import com.example.rickandmorty.data.dto.ResponseLocations
 import retrofit2.Response
 import retrofit2.http.GET
 import retrofit2.http.Path
+import retrofit2.http.Query
 
 interface ApiService {
 
     @GET("api/character")
     suspend fun fetchAllCharacters(): Response<ResponseCharacters>
-
     @GET("api/character/{id}")
     suspend fun fetchCharacter(@Path("id") id: Int): Response<ResponseCharacterModel>
+    @GET("api/character")
+    suspend fun searchCharacters(@Query("name") name: String): Response<ResponseCharacters>
 
     @GET("api/episode")
     suspend fun fetchAllEpisodes(): Response<ResponseEpisodes>
@@ -29,4 +31,6 @@ interface ApiService {
 
     @GET("api/location/{id}")
     suspend fun fetchLocation(@Path("id") id: Int): Response<ResponseLocationModel>
+
+
 }

@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -31,13 +32,11 @@ fun LocationDetailScreen(
     navController: NavController,
     viewModel: LocationViewModel = koinViewModel()
 ) {
-    var location by remember { mutableStateOf<ResponseLocationModel?>(null) }
+    val location by viewModel.locationDetailFlow.collectAsState()
     val idInt = locationId.toIntOrNull() ?: 0
 
     LaunchedEffect(locationId) {
-        viewModel.fetchLocationDetail(idInt) {
-            location = it
-        }
+        viewModel.fetchLocationDetail(idInt)
     }
 
     Column(

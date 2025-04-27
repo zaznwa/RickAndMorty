@@ -16,12 +16,25 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.SearchBar
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -43,20 +56,58 @@ import com.example.rickandmorty.ui.navigation.Screen
 import org.koin.compose.viewmodel.koinViewModel
 
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CharactersScreen(
     navController: NavController,
     viewModel: CharacterViewModel = koinViewModel()
 ) {
 
-    val characters by viewModel.characters.observeAsState(emptyList())
+    var searchQuery by remember { mutableStateOf("") }
+    val charactersFlow by viewModel.charactersFlow.collectAsState()
 
-    LazyColumn(
+    val filteredCharacters = remember(charactersFlow, searchQuery) {
+        if (searchQuery.isBlank()) {
+            charactersFlow
+        } else {
+            charactersFlow.filter { character ->
+                character.name?.contains(searchQuery, ignoreCase = true) == true
+            }
+        }
+    }
+    Column(
         modifier = Modifier
             .fillMaxSize()
+            .background(DarkGray)
     ) {
-        items(characters) { character ->
-            CharactersItem(character = character, navController = navController)
+        SearchBar(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(  horizontal = 8.dp),
+            query = searchQuery,
+            onQueryChange = { searchQuery = it },
+            onSearch = { viewModel.searchCharacters(searchQuery) },
+            active = false,
+            onActiveChange = {},
+            placeholder = { Text("Поиск персонажей") },
+            leadingIcon = { Icon(Icons.Default.Search, "Поиск") },
+            trailingIcon = {
+                if (searchQuery.isNotEmpty()) {
+                    IconButton(onClick = { searchQuery = "" }) {
+                        Icon(Icons.Default.Close, "Очистить")
+                    }
+                }
+            }
+        ) {}
+
+
+        LazyColumn(
+            modifier = Modifier
+                .fillMaxSize()
+        ) {
+            items(filteredCharacters) { character ->
+                CharactersItem(character = character, navController = navController)
+            }
         }
     }
 }
@@ -74,9 +125,9 @@ fun CharactersItem(
         colors = CardDefaults.cardColors(
             containerColor = Gray
         ),
-       onClick ={
-           navController.navigate("${Screen.CharacterDetail.route}/${character.id}")
-       }
+        onClick = {
+            navController.navigate("${Screen.CharacterDetail.route}/${character.id}")
+        }
     ) {
         Row(
             modifier = Modifier.fillMaxWidth()
@@ -99,7 +150,7 @@ fun CharactersItem(
                 Text(
                     text = character.name.toString(), color = White, fontSize = 26.sp
                 )
-                Column (
+                Column(
                     modifier = Modifier.padding(top = 4.dp),
                 ) {
 
@@ -114,6 +165,7 @@ fun CharactersItem(
         }
     }
 }
+
 @Preview(showBackground = true)
 @Composable
 fun CharactersScreenPreview() {

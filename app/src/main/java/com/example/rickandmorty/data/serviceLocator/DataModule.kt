@@ -1,13 +1,18 @@
-package com.example.rickandmorty.di
+package com.example.rickandmorty.data.serviceLocator
 
 
+import android.content.Context
+import androidx.room.Room
 import com.example.rickandmorty.BuildConfig
 import com.example.rickandmorty.data.api.ApiService
+import com.example.rickandmorty.data.dao.AppDatabase
 import com.example.rickandmorty.data.repository.CharacterRepository
 import com.example.rickandmorty.data.repository.EpisodeRepository
+import com.example.rickandmorty.data.repository.FavoritesRepository
 import com.example.rickandmorty.data.repository.LocationRepository
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
+import org.koin.android.ext.koin.androidContext
 import org.koin.core.module.Module
 import org.koin.dsl.module
 import retrofit2.Retrofit
@@ -20,9 +25,12 @@ val dataModule: Module = module {
     single { provideOkHttpClient(get()) }
     single { provideRetrofit(get()) }
     single { get<Retrofit>().create(ApiService::class.java) }
+    single { provideDatabase(androidContext()) }
+    single { get<AppDatabase>().favoriteCharactersDao() }
     single { CharacterRepository(get()) }
     single { EpisodeRepository(get()) }
     single { LocationRepository(get()) }
+    single { FavoritesRepository(get()) }
 }
 fun provideLoggingInterceptor(): HttpLoggingInterceptor {
     return HttpLoggingInterceptor().apply {
@@ -46,5 +54,10 @@ private fun provideRetrofit(okHttpClient: OkHttpClient): Retrofit {
         .client(okHttpClient)
         .addConverterFactory(GsonConverterFactory.create())
         .baseUrl(BuildConfig.BASE_URL)
+        .build()
+}
+fun provideDatabase(context: Context): AppDatabase {
+    return Room.databaseBuilder(context, AppDatabase::class.java, "rickmorty_database")
+        .fallbackToDestructiveMigration()
         .build()
 }
