@@ -34,7 +34,10 @@ import com.example.rickandmorty.ui.screen.favorite.FavoriteScreen
 import com.example.rickandmorty.ui.screen.location.LocationDetailScreen
 import com.example.rickandmorty.ui.screen.location.LocationsScreen
 
-data class BottomNavItem(val screen: Screen, val icon: ImageVector)
+data class BottomNavItem(
+    val screen: Screen,
+    val icon: ImageVector
+)
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

@@ -16,4 +16,8 @@ class CharacterRepository(
     fun fetchCharacterDetail(id: Int) = flow<ResponseCharacterModel?> {
         apiService.fetchCharacter(id).body()?.let { emit(it) }
     }.flowOn(Dispatchers.IO)
+
+    fun searchCharacters(name: String) = flow {
+        apiService.searchCharacters(name).body()?.results?.let { emit(it) }
+    }.flowOn(Dispatchers.IO)
 }

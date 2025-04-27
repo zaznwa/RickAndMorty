@@ -30,6 +30,15 @@ class CharacterViewModel(
             .catch { _charactersFlow.value = emptyList() }
             .collect { _charactersFlow.value = it }
     }
+    fun searchCharacters(query: String) = viewModelScope.launch {
+        if (query.isBlank()) {
+            fetchCharacters()
+        } else {
+            repository.searchCharacters(query)
+                .catch { _charactersFlow.value = emptyList() }
+                .collect { _charactersFlow.value = it }
+        }
+    }
 
     fun fetchCharacterDetail(id: Int) = viewModelScope.launch {
         repository.fetchCharacterDetail(id)
