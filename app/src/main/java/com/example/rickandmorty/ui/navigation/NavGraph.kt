@@ -127,6 +127,7 @@ fun currentScreenTitle(currentRoute: String?): String? {
         currentRoute == Screen.Characters.route -> Screen.Characters.title
         currentRoute == Screen.Locations.route -> Screen.Locations.title
         currentRoute == Screen.Episodes.route -> Screen.Episodes.title
+        currentRoute == Screen.Favorites.route -> Screen.Favorites.title
         currentRoute?.startsWith(Screen.CharacterDetail.route) == true -> "Детали персонажа"
         currentRoute?.startsWith(Screen.LocationDetail.route) == true -> "Детали локации"
         currentRoute?.startsWith(Screen.EpisodeDetail.route) == true -> "Детали эпизода"
