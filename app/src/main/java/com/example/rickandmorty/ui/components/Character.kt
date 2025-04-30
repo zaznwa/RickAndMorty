@@ -50,6 +50,8 @@ fun CharacterDetailCard(
         Text(text = "Status: ${character?.status}", fontSize = 18.sp, color = Color.LightGray)
         Text(text = "Species: ${character?.species}", fontSize = 18.sp, color = Color.LightGray)
         Text(text = "Gender: ${character?.gender}", fontSize = 18.sp, color = Color.LightGray)
+        Text(text = "Origin: ${character?.origin?.name}", fontSize = 18.sp, color = Color.LightGray)
+        Text(text = "Location: ${character?.location?.name}", fontSize = 18.sp, color = Color.LightGray)
 
         Spacer(modifier = Modifier.height(8.dp))
 

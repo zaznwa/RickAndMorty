@@ -32,7 +32,7 @@ import com.example.rickandmorty.ui.screen.episode.EpisodeDetailScreen
 import com.example.rickandmorty.ui.screen.episode.EpisodesScreen
 import com.example.rickandmorty.ui.screen.favorite.FavoriteScreen
 import com.example.rickandmorty.ui.screen.location.LocationDetailScreen
-import com.example.rickandmorty.ui.screen.location.LocationsScreen
+import com.example.rickandmorty.ui.screen.location.LocationScreen
 
 data class BottomNavItem(
     val screen: Screen,
@@ -85,7 +85,7 @@ fun App() {
                 CharactersScreen(navController)
             }
             composable(Screen.Locations.route) {
-                LocationsScreen(navController)
+                LocationScreen(navController)
             }
             composable(Screen.Episodes.route) {
                 EpisodesScreen(navController)

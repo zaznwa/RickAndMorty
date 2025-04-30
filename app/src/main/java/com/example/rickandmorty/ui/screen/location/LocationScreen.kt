@@ -1,19 +1,17 @@
-package com.example.rickandmorty.ui.screen.episode
+package com.example.rickandmorty.ui.screen.location
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavController
 import com.example.rickandmorty.ui.components.ListItem
 import org.koin.compose.viewmodel.koinViewModel
-import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Search
@@ -23,35 +21,34 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.SearchBar
 import androidx.compose.material3.Text
 import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.graphics.Color.Companion.DarkGray
 import androidx.compose.ui.unit.dp
 import com.example.rickandmorty.ui.navigation.Screen
 
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun EpisodesScreen(navController: NavController, viewModel: EpisodeViewModel = koinViewModel()) {
+fun LocationScreen(
+    navController: NavController,
+    viewModel: LocationViewModel = koinViewModel()
+) {
 
-    val episodes by viewModel.episodesFlow.collectAsState()
     var searchQuery by remember { mutableStateOf("") }
+    val locations by viewModel.locationsFlow.collectAsState()
 
-    val filteredEpisodes = remember(episodes, searchQuery) {
+    val filteredLocations = remember(locations, searchQuery) {
         if (searchQuery.isBlank()) {
-            episodes
+            locations
         } else {
-            episodes.filter { episode ->
-                episode.name?.contains(searchQuery, ignoreCase = true) == true
+            locations.filter { location ->
+                location.name?.contains(searchQuery, ignoreCase = true) == true
             }
         }
     }
+
     Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(DarkGray)
+        modifier = Modifier.fillMaxSize()
     ) {
         SearchBar(
             modifier = Modifier
@@ -59,10 +56,10 @@ fun EpisodesScreen(navController: NavController, viewModel: EpisodeViewModel = k
                 .padding(horizontal = 8.dp),
             query = searchQuery,
             onQueryChange = { searchQuery = it },
-            onSearch = { viewModel.searchEpisodes(searchQuery) },
+            onSearch = { viewModel.searchLocations(searchQuery) },
             active = false,
             onActiveChange = {},
-            placeholder = { Text("Поиск эпизодов") },
+            placeholder = { Text("Поиск локации") },
             leadingIcon = { Icon(Icons.Default.Search, "Поиск") },
             trailingIcon = {
                 if (searchQuery.isNotEmpty()) {
@@ -71,18 +68,18 @@ fun EpisodesScreen(navController: NavController, viewModel: EpisodeViewModel = k
                     }
                 }
             }
-        ) { }
+        ) {}
 
         LazyColumn(
             modifier = Modifier
                 .fillMaxSize()
         ) {
-            items(filteredEpisodes) { episode ->
+            items(filteredLocations) { locations ->
                 ListItem(
-                    id = episode.id ?: 0,
-                    name = episode.name ?: "Unknown",
+                    id = locations.id ?: 0,
+                    name = locations.name ?: "Unknown",
                     onClick = {
-                        navController.navigate(Screen.EpisodeDetail.route + "/${episode.id}")
+                        navController.navigate(Screen.LocationDetail.route + "/${locations.id}")
                     }
                 )
             }

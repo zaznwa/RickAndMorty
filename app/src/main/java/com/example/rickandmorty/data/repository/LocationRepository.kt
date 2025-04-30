@@ -17,4 +17,8 @@ class LocationRepository(
     fun fetchLocationDetail(id: Int) = flow<ResponseLocationModel?> {
         apiService.fetchLocation(id).body()?.let { emit(it) }
     }.flowOn(Dispatchers.IO)
+
+    fun searchLocations(name: String) = flow {
+        apiService.searchLocations(name).body()?.results?.let { emit(it) }
+    }.flowOn(Dispatchers.IO)
 }
