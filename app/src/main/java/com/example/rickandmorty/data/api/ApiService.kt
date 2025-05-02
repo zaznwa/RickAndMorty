@@ -22,15 +22,17 @@ interface ApiService {
 
     @GET("api/episode")
     suspend fun fetchAllEpisodes(): Response<ResponseEpisodes>
-
     @GET("api/episode/{id}")
     suspend fun fetchEpisode(@Path("id") id: Int): Response<ResponseEpisodeModel>
+    @GET("api/episode")
+    suspend fun searchEpisode(@Query("name") name: String): Response<ResponseEpisodes>
 
     @GET("api/location")
     suspend fun fetchAllLocations(): Response<ResponseLocations>
-
     @GET("api/location/{id}")
     suspend fun fetchLocation(@Path("id") id: Int): Response<ResponseLocationModel>
+    @GET("api/location")
+    suspend fun searchLocations(@Query("name") name: String): Response<ResponseLocations>
 
 
 }

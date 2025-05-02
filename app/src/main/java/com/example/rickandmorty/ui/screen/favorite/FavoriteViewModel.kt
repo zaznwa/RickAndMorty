@@ -7,14 +7,38 @@ import com.example.rickandmorty.data.dto.ResponseCharacterModel
 import com.example.rickandmorty.data.dto.ResponseCharacters
 import com.example.rickandmorty.data.repository.FavoritesRepository
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.debounce
+import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
 class FavoriteViewModel(
     private val repository: FavoritesRepository
 ) : ViewModel() {
-    val favoriteCharactersFlow: Flow<List<FavoriteCharacterEntity>> =
-        repository.fetchFavoriteCharacters()
+
+
+    internal val searchQuery = MutableStateFlow("")
+
+    @OptIn(FlowPreview::class, ExperimentalCoroutinesApi::class)
+    val favoriteCharactersFlow = searchQuery
+        .debounce(300)
+        .flatMapLatest { query ->
+            if (query.isBlank()) {
+                repository.fetchFavoriteCharacters()
+            } else {
+                repository.searchFavoriteCharacters(query)
+            }
+        }
+        .stateIn(viewModelScope, SharingStarted.Eagerly, emptyList())
+
+    fun onSearchQueryChanged(query: String) {
+        searchQuery.value = query
+    }
 
     fun addFavoriteCharacter(character: ResponseCharacterModel) {
         val favoriteCharacterEntity = FavoriteCharacterEntity(

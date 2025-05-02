@@ -32,7 +32,7 @@ import com.example.rickandmorty.ui.screen.episode.EpisodeDetailScreen
 import com.example.rickandmorty.ui.screen.episode.EpisodesScreen
 import com.example.rickandmorty.ui.screen.favorite.FavoriteScreen
 import com.example.rickandmorty.ui.screen.location.LocationDetailScreen
-import com.example.rickandmorty.ui.screen.location.LocationsScreen
+import com.example.rickandmorty.ui.screen.location.LocationScreen
 
 data class BottomNavItem(
     val screen: Screen,
@@ -85,7 +85,7 @@ fun App() {
                 CharactersScreen(navController)
             }
             composable(Screen.Locations.route) {
-                LocationsScreen(navController)
+                LocationScreen(navController)
             }
             composable(Screen.Episodes.route) {
                 EpisodesScreen(navController)
@@ -127,6 +127,7 @@ fun currentScreenTitle(currentRoute: String?): String? {
         currentRoute == Screen.Characters.route -> Screen.Characters.title
         currentRoute == Screen.Locations.route -> Screen.Locations.title
         currentRoute == Screen.Episodes.route -> Screen.Episodes.title
+        currentRoute == Screen.Favorites.route -> Screen.Favorites.title
         currentRoute?.startsWith(Screen.CharacterDetail.route) == true -> "Детали персонажа"
         currentRoute?.startsWith(Screen.LocationDetail.route) == true -> "Детали локации"
         currentRoute?.startsWith(Screen.EpisodeDetail.route) == true -> "Детали эпизода"

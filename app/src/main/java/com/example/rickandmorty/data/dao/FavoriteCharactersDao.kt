@@ -18,4 +18,9 @@ interface FavoriteCharactersDao {
 
     @Delete
     suspend fun deleteFavoriteCharacter(character: FavoriteCharacterEntity)
+
+    @Query("SELECT * FROM favorite_characters WHERE name LIKE '%' || :query || '%'")
+    fun searchFavoriteCharacters(query: String): Flow<List<FavoriteCharacterEntity>>
+
+
 }

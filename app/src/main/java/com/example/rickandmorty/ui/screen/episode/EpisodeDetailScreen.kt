@@ -61,6 +61,7 @@ fun EpisodeDetailScreen(
         Text(text = "Air Date: $airDate", fontSize = 18.sp)
         Text(text = "Episode Code: $episodeCode", fontSize = 18.sp)
         Text(text = "Created: $created", fontSize = 18.sp)
+//        Text(text = "Characters: $characters", fontSize = 18.sp)
     }
 }
 

@@ -14,7 +14,7 @@ import kotlinx.coroutines.launch
 
 class LocationViewModel(
     private val repository: LocationRepository
-): ViewModel() {
+) : ViewModel() {
 
     private val _locationsFlow = MutableStateFlow<List<ResponseLocationModel>>(emptyList())
     val locationsFlow: StateFlow<List<ResponseLocationModel>> = _locationsFlow.asStateFlow()
@@ -32,6 +32,16 @@ class LocationViewModel(
             .collect { locations ->
                 _locationsFlow.value = locations
             }
+    }
+
+    fun searchLocations(query: String) = viewModelScope.launch {
+        if (query.isBlank()) {
+            fetchLocations()
+        } else {
+            repository.searchLocations(query)
+                .catch { _locationsFlow.value = emptyList() }
+                .collect { _locationsFlow.value = it }
+        }
     }
 
     fun fetchLocationDetail(id: Int) = viewModelScope.launch {

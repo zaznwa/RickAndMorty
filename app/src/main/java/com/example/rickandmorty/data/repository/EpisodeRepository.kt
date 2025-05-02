@@ -17,4 +17,8 @@ class EpisodeRepository(
     fun fetchEpisodeDetail(id: Int) = flow<ResponseEpisodeModel?> {
         apiService.fetchEpisode(id).body()?.let { emit(it) }
     }.flowOn(Dispatchers.IO)
+
+    fun searchEpisode(name: String) = flow {
+        apiService.searchEpisode(name).body()?.results?.let { emit(it) }
+    }.flowOn(Dispatchers.IO)
 }

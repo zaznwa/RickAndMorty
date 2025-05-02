@@ -14,10 +14,15 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Card
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.SearchBar
 import androidx.compose.material3.SwipeToDismissBox
 import androidx.compose.material3.SwipeToDismissBoxValue
 import androidx.compose.material3.Text
@@ -33,6 +38,7 @@ import androidx.compose.ui.graphics.Color.Companion.White
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import coil3.compose.AsyncImage
 import com.example.rickandmorty.data.dao.FavoriteCharacterEntity
@@ -45,50 +51,74 @@ fun FavoriteScreen(
     favoriteViewModel: FavoriteViewModel = koinViewModel()
 ) {
     val favoriteCharacters by favoriteViewModel.favoriteCharactersFlow.collectAsState(initial = emptyList())
+    val search by favoriteViewModel.searchQuery.collectAsState()
 
-    LazyColumn(
-        modifier = Modifier.fillMaxSize()
-    ) {
-        items(favoriteCharacters, key = { it.id!! }) { favorite ->
-            val dismissState = rememberSwipeToDismissBoxState(
-                confirmValueChange = { dismissValue ->
-                    if (dismissValue == SwipeToDismissBoxValue.EndToStart ) {
-                        favoriteViewModel.deleteFavoriteCharacter(favorite)
-                        true
-                    } else {
-                        false
+    Column {
+        SearchBar(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 8.dp),
+            query = search,
+            onQueryChange = { favoriteViewModel.onSearchQueryChanged(it) },
+            onSearch = { },
+            active = false,
+            onActiveChange = {},
+            placeholder = { Text("Поиск персонажей") },
+            leadingIcon = { Icon(Icons.Default.Search, "Поиск") },
+            trailingIcon = {
+                if (search.isNotEmpty()) {
+                    IconButton(onClick = { favoriteViewModel.onSearchQueryChanged("") }) {
+                        Icon(Icons.Default.Close, "Очистить")
                     }
-                },
-                positionalThreshold = {distance -> distance * 0.5f }
-            )
+                }
+            }
+        ) { }
 
-            SwipeToDismissBox(
-                state = dismissState,
-                enableDismissFromStartToEnd = false,
-                backgroundContent = {
-                    Box(
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .padding(10.dp)
-                            .clip(RoundedCornerShape(16.dp))
-                            .background(Red),
-                        contentAlignment = Alignment.CenterEnd
-                    ) {
-                        Icon(
-                            imageVector = Icons.Default.Delete,
-                            contentDescription = "Удалить",
-                            tint = White,
-                            modifier = Modifier.size(40.dp)
+
+        LazyColumn(
+            modifier = Modifier.fillMaxSize()
+        ) {
+            items(favoriteCharacters, key = { it.id!! }) { favorite ->
+                val dismissState = rememberSwipeToDismissBoxState(
+                    confirmValueChange = { dismissValue ->
+                        if (dismissValue == SwipeToDismissBoxValue.EndToStart) {
+                            favoriteViewModel.deleteFavoriteCharacter(favorite)
+                            true
+                        } else {
+                            false
+                        }
+                    },
+                    positionalThreshold = { distance -> distance * 0.5f }
+                )
+
+                SwipeToDismissBox(
+                    state = dismissState,
+                    enableDismissFromStartToEnd = false,
+                    backgroundContent = {
+                        Box(
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .padding(10.dp)
+                                .clip(RoundedCornerShape(16.dp))
+                                .background(Red),
+                            contentAlignment = Alignment.CenterEnd
+                        ) {
+                            Icon(
+                                imageVector = Icons.Default.Delete,
+                                contentDescription = "Удалить",
+                                tint = White,
+                                modifier = Modifier.size(40.dp)
+                            )
+                        }
+                    },
+                    content = {
+                        FavoriteItem(
+                            favorite = favorite,
+                            navController = navController
                         )
                     }
-                },
-                content = {
-                    FavoriteItem(
-                        favorite = favorite,
-                        navController = navController
-                    )
-                }
-            )
+                )
+            }
         }
     }
 }

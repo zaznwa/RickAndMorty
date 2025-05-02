@@ -120,7 +120,7 @@ fun CharactersItem(
     Card(
         modifier = Modifier
             .fillMaxWidth()
-            .height(160.dp)
+            .height(100.dp)
             .padding(8.dp),
         colors = CardDefaults.cardColors(
             containerColor = Gray
@@ -134,7 +134,7 @@ fun CharactersItem(
         ) {
             Image(
                 modifier = Modifier
-                    .width(148.dp)
+                    .width(100.dp)
                     .fillMaxHeight(),
                 contentDescription = "Character image",
                 contentScale = ContentScale.Crop,

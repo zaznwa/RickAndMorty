@@ -14,7 +14,7 @@ import kotlinx.coroutines.launch
 
 class EpisodeViewModel(
     private val repository: EpisodeRepository
-): ViewModel() {
+) : ViewModel() {
 
     private val _episodesFlow = MutableStateFlow<List<ResponseEpisodeModel>>(emptyList())
     val episodesFlow: StateFlow<List<ResponseEpisodeModel>> = _episodesFlow.asStateFlow()
@@ -30,6 +30,16 @@ class EpisodeViewModel(
         repository.fetchEpisodes()
             .catch { _episodesFlow.value = emptyList() }
             .collect { _episodesFlow.value = it }
+    }
+
+    fun searchEpisodes(query: String) = viewModelScope.launch {
+        if (query.isBlank()) {
+            fetchEpisodes()
+        } else {
+            repository.searchEpisode(query)
+                .catch { _episodesFlow.value = emptyList() }
+                .collect { _episodesFlow.value = it }
+        }
     }
 
     fun fetchEpisodeDetail(id: Int) = viewModelScope.launch {
