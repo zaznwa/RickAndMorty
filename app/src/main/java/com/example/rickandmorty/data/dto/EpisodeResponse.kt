@@ -1,7 +1,8 @@
 package com.example.rickandmorty.data.dto
 
 data class ResponseEpisodes(
-    val results: List<ResponseEpisodeModel>? = null
+    val results: List<ResponseEpisodeModel>? = null,
+    val info: PageInfo? = null
 )
 data class ResponseEpisodeModel(
     val id: Int? = null,

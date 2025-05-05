@@ -22,6 +22,7 @@ import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -50,6 +51,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import androidx.paging.LoadState
+import androidx.paging.compose.collectAsLazyPagingItems
 import coil3.compose.rememberAsyncImagePainter
 import com.example.rickandmorty.data.dto.ResponseCharacterModel
 import com.example.rickandmorty.ui.navigation.Screen
@@ -64,49 +67,56 @@ fun CharactersScreen(
 ) {
 
     var searchQuery by remember { mutableStateOf("") }
-    val charactersFlow by viewModel.charactersFlow.collectAsState()
+    val pagingCharacters = viewModel.charactersFlow.collectAsLazyPagingItems()
+    val searchCharacters = viewModel.searchCharactersFlow.collectAsLazyPagingItems()
 
-    val filteredCharacters = remember(charactersFlow, searchQuery) {
-        if (searchQuery.isBlank()) {
-            charactersFlow
-        } else {
-            charactersFlow.filter { character ->
-                character.name?.contains(searchQuery, ignoreCase = true) == true
-            }
-        }
-    }
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(DarkGray)
-    ) {
+
+    Column(modifier = Modifier.fillMaxSize().background(DarkGray)) {
         SearchBar(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(  horizontal = 8.dp),
             query = searchQuery,
-            onQueryChange = { searchQuery = it },
-            onSearch = { viewModel.searchCharacters(searchQuery) },
+            onQueryChange = {
+                searchQuery = it
+                viewModel.setSearchQuery(it)
+            },
+            onSearch = {},
             active = false,
             onActiveChange = {},
             placeholder = { Text("Поиск персонажей") },
-            leadingIcon = { Icon(Icons.Default.Search, "Поиск") },
+            leadingIcon = { Icon(Icons.Default.Search, contentDescription = null) },
             trailingIcon = {
-                if (searchQuery.isNotEmpty()) {
-                    IconButton(onClick = { searchQuery = "" }) {
-                        Icon(Icons.Default.Close, "Очистить")
+                if (searchQuery.isNotBlank()) {
+                    IconButton(onClick = {
+                        searchQuery = ""
+                        viewModel.setSearchQuery("")
+                    }) {
+                        Icon(Icons.Default.Close, contentDescription = "Очистить")
                     }
                 }
-            }
+            },
+            modifier = Modifier.fillMaxWidth().padding(8.dp)
         ) {}
 
 
-        LazyColumn(
-            modifier = Modifier
-                .fillMaxSize()
-        ) {
-            items(filteredCharacters) { character ->
-                CharactersItem(character = character, navController = navController)
+
+        LazyColumn(modifier = Modifier.fillMaxSize()) {
+            val listToShow = if (searchQuery.isNotBlank()) searchCharacters else pagingCharacters
+
+            items(listToShow.itemCount) { index ->
+                listToShow[index]?.let { character ->
+                    CharactersItem(character = character, navController = navController)
+                }
+            }
+
+            listToShow.apply {
+                when {
+                    loadState.append is LoadState.Loading -> {
+                        item { CircularProgressIndicator(modifier = Modifier.padding(16.dp)) }
+                    }
+                    loadState.refresh is LoadState.Error -> {
+                        val e = loadState.refresh as LoadState.Error
+                        item { Text("Ошибка: ${e.error.message}") }
+                    }
+                }
             }
         }
     }
@@ -120,7 +130,7 @@ fun CharactersItem(
     Card(
         modifier = Modifier
             .fillMaxWidth()
-            .height(160.dp)
+            .height(100.dp)
             .padding(8.dp),
         colors = CardDefaults.cardColors(
             containerColor = Gray
@@ -134,7 +144,7 @@ fun CharactersItem(
         ) {
             Image(
                 modifier = Modifier
-                    .width(148.dp)
+                    .width(100.dp)
                     .fillMaxHeight(),
                 contentDescription = "Character image",
                 contentScale = ContentScale.Crop,

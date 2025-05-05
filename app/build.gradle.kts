@@ -97,7 +97,7 @@ dependencies {
     implementation(libs.koin.compose.viewmodel)
 
     //paging
-//    implementation (libs.androidx.paging.compose)
+    implementation ("androidx.paging:paging-compose:3.3.6")
 
     // Room
     implementation(libs.androidx.room.runtime)

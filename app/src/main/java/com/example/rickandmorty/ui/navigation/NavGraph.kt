@@ -2,6 +2,7 @@ package com.example.rickandmorty.ui.navigation
 
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.Home
@@ -32,7 +33,7 @@ import com.example.rickandmorty.ui.screen.episode.EpisodeDetailScreen
 import com.example.rickandmorty.ui.screen.episode.EpisodesScreen
 import com.example.rickandmorty.ui.screen.favorite.FavoriteScreen
 import com.example.rickandmorty.ui.screen.location.LocationDetailScreen
-import com.example.rickandmorty.ui.screen.location.LocationsScreen
+import com.example.rickandmorty.ui.screen.location.LocationScreen
 
 data class BottomNavItem(
     val screen: Screen,
@@ -85,7 +86,7 @@ fun App() {
                 CharactersScreen(navController)
             }
             composable(Screen.Locations.route) {
-                LocationsScreen(navController)
+                LocationScreen(navController)
             }
             composable(Screen.Episodes.route) {
                 EpisodesScreen(navController)
@@ -127,6 +128,7 @@ fun currentScreenTitle(currentRoute: String?): String? {
         currentRoute == Screen.Characters.route -> Screen.Characters.title
         currentRoute == Screen.Locations.route -> Screen.Locations.title
         currentRoute == Screen.Episodes.route -> Screen.Episodes.title
+        currentRoute == Screen.Favorites.route -> Screen.Favorites.title
         currentRoute?.startsWith(Screen.CharacterDetail.route) == true -> "Детали персонажа"
         currentRoute?.startsWith(Screen.LocationDetail.route) == true -> "Детали локации"
         currentRoute?.startsWith(Screen.EpisodeDetail.route) == true -> "Детали эпизода"
@@ -137,7 +139,7 @@ fun currentScreenTitle(currentRoute: String?): String? {
 @Composable
 fun BottomNavigationBar(navController: NavController, currentRoute: String?) {
     val items = listOf(
-        BottomNavItem(Screen.Characters, Icons.Filled.Home),
+        BottomNavItem(Screen.Characters, Icons.Filled.AccountCircle),
         BottomNavItem(Screen.Locations, Icons.Filled.Place),
         BottomNavItem(Screen.Episodes, Icons.Filled.DateRange),
         BottomNavItem(Screen.Favorites, Icons.Filled.Favorite)

@@ -1,7 +1,14 @@
 package com.example.rickandmorty.data.dto
 
+import androidx.room.util.joinIntoString
+import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.internal.writeJson
+import okhttp3.OkHttpClient
+import okhttp3.Request
+
 data class ResponseCharacters(
-    val results: List<ResponseCharacterModel>? = null
+    val results: List<ResponseCharacterModel>? = null,
+    val info: PageInfo? = null
 )
 data class ResponseCharacterModel(
     val id: Int? = null,

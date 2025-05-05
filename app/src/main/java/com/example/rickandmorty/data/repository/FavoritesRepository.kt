@@ -15,4 +15,6 @@ class FavoritesRepository(private val dao: FavoriteCharactersDao) {
     suspend fun deleteFavoriteCharacter(character: FavoriteCharacterEntity) {
         dao.deleteFavoriteCharacter(character)
     }
+
+    fun searchFavoriteCharacters(query: String): Flow<List<FavoriteCharacterEntity>> = dao.searchFavoriteCharacters(query)
 }
