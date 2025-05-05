@@ -1,5 +1,6 @@
 package com.example.rickandmorty.ui.screen.location
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -24,7 +25,9 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.graphics.Color.Companion.DarkGray
 import androidx.compose.ui.unit.dp
+import androidx.paging.compose.collectAsLazyPagingItems
 import com.example.rickandmorty.ui.navigation.Screen
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -35,35 +38,34 @@ fun LocationScreen(
 ) {
 
     var searchQuery by remember { mutableStateOf("") }
-    val locations by viewModel.locationsFlow.collectAsState()
-
-    val filteredLocations = remember(locations, searchQuery) {
-        if (searchQuery.isBlank()) {
-            locations
-        } else {
-            locations.filter { location ->
-                location.name?.contains(searchQuery, ignoreCase = true) == true
-            }
-        }
-    }
+    val pagingLocations = viewModel.locationsFlow.collectAsLazyPagingItems()
+    val searchLocations = viewModel.searchLocationsFlow.collectAsLazyPagingItems()
 
     Column(
-        modifier = Modifier.fillMaxSize()
+        modifier = Modifier
+            .fillMaxSize()
+            .background(DarkGray)
     ) {
         SearchBar(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(horizontal = 8.dp),
             query = searchQuery,
-            onQueryChange = { searchQuery = it },
-            onSearch = { viewModel.searchLocations(searchQuery) },
+            onQueryChange = {
+                searchQuery = it
+                viewModel.setSearchQuery(it)
+            },
+            onSearch = {},
             active = false,
             onActiveChange = {},
             placeholder = { Text("Поиск локации") },
             leadingIcon = { Icon(Icons.Default.Search, "Поиск") },
             trailingIcon = {
                 if (searchQuery.isNotEmpty()) {
-                    IconButton(onClick = { searchQuery = "" }) {
+                    IconButton(onClick = {
+                        searchQuery = ""
+                        viewModel.setSearchQuery("")
+                    }) {
                         Icon(Icons.Default.Close, "Очистить")
                     }
                 }
@@ -74,14 +76,18 @@ fun LocationScreen(
             modifier = Modifier
                 .fillMaxSize()
         ) {
-            items(filteredLocations) { locations ->
-                ListItem(
-                    id = locations.id ?: 0,
-                    name = locations.name ?: "Unknown",
-                    onClick = {
-                        navController.navigate(Screen.LocationDetail.route + "/${locations.id}")
-                    }
-                )
+            val listToShow = if (searchQuery.isNotBlank()) searchLocations else pagingLocations
+
+            items(listToShow.itemCount) { index ->
+                listToShow[index]?.let { locations ->
+                    ListItem(
+                        id = locations.id,
+                        name = locations.name.toString(),
+                                onClick = {
+                            navController.navigate(Screen.LocationDetail.route + "/${locations.id}")
+                        }
+                    )
+                }
             }
         }
     }

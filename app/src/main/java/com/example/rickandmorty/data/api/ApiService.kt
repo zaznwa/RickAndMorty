@@ -14,25 +14,50 @@ import retrofit2.http.Query
 interface ApiService {
 
     @GET("api/character")
-    suspend fun fetchAllCharacters(): Response<ResponseCharacters>
+    suspend fun fetchAllCharacters(
+        @Query("page") page: Int = 1
+    ): Response<ResponseCharacters>
+
     @GET("api/character/{id}")
-    suspend fun fetchCharacter(@Path("id") id: Int): Response<ResponseCharacterModel>
+    suspend fun fetchCharacter(
+        @Path("id") id: Int
+    ): Response<ResponseCharacterModel>
+
     @GET("api/character")
-    suspend fun searchCharacters(@Query("name") name: String): Response<ResponseCharacters>
+    suspend fun searchCharacters(
+        @Query("name") name: String,
+        @Query("page") page: Int = 1
+    ): Response<ResponseCharacters>
 
     @GET("api/episode")
-    suspend fun fetchAllEpisodes(): Response<ResponseEpisodes>
+    suspend fun fetchAllEpisodes(
+        @Query("page") page: Int = 1
+    ): Response<ResponseEpisodes>
+
     @GET("api/episode/{id}")
-    suspend fun fetchEpisode(@Path("id") id: Int): Response<ResponseEpisodeModel>
+    suspend fun fetchEpisode(
+        @Path("id") id: Int): Response<ResponseEpisodeModel>
+
     @GET("api/episode")
-    suspend fun searchEpisode(@Query("name") name: String): Response<ResponseEpisodes>
+    suspend fun searchEpisode(
+        @Query("name") name: String,
+        @Query("page") page: Int = 1
+    ): Response<ResponseEpisodes>
 
     @GET("api/location")
-    suspend fun fetchAllLocations(): Response<ResponseLocations>
+    suspend fun fetchAllLocations(
+        @Query("page") page: Int = 1
+    ): Response<ResponseLocations>
+
     @GET("api/location/{id}")
-    suspend fun fetchLocation(@Path("id") id: Int): Response<ResponseLocationModel>
+    suspend fun fetchLocation(
+        @Path("id") id: Int): Response<ResponseLocationModel>
+
     @GET("api/location")
-    suspend fun searchLocations(@Query("name") name: String): Response<ResponseLocations>
+    suspend fun searchLocations(
+        @Query("name") name: String,
+        @Query("page") page: Int = 1
+    ): Response<ResponseLocations>
 
 
 }

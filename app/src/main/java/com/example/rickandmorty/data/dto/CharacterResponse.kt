@@ -7,7 +7,8 @@ import okhttp3.OkHttpClient
 import okhttp3.Request
 
 data class ResponseCharacters(
-    val results: List<ResponseCharacterModel>? = null
+    val results: List<ResponseCharacterModel>? = null,
+    val info: PageInfo? = null
 )
 data class ResponseCharacterModel(
     val id: Int? = null,

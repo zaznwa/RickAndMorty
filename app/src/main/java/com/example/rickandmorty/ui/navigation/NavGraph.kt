@@ -2,6 +2,7 @@ package com.example.rickandmorty.ui.navigation
 
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.Home
@@ -138,7 +139,7 @@ fun currentScreenTitle(currentRoute: String?): String? {
 @Composable
 fun BottomNavigationBar(navController: NavController, currentRoute: String?) {
     val items = listOf(
-        BottomNavItem(Screen.Characters, Icons.Filled.Home),
+        BottomNavItem(Screen.Characters, Icons.Filled.AccountCircle),
         BottomNavItem(Screen.Locations, Icons.Filled.Place),
         BottomNavItem(Screen.Episodes, Icons.Filled.DateRange),
         BottomNavItem(Screen.Favorites, Icons.Filled.Favorite)
